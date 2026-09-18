@@ -1,10 +1,43 @@
 "use client";
 
-import Image from "next/image";
+import { createClient } from "@/src/lib/supabase/client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginPage() {
+  const supabase = createClient();
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+
+    // Handle successful login (redirect to user dashboard)
+    console.log("Login successful:", data);
+    setLoading(false);
+  };
 
   return (
     <div className="w-full max-w-md">
@@ -17,9 +50,8 @@ export default function LoginPage() {
             alt="GearSphere"
             width={1120}
             height={348}
-            className="h-auto w-45 rounded-sm sm:w-52.5]"
+            className="h-auto w-45 rounded-sm sm:w-52.5"
             loading="eager"
-            
           />
         </div>
 
@@ -32,7 +64,7 @@ export default function LoginPage() {
 
       {/* Login Card */}
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Error Message - Ready for Authentication */}
           <div
             role="alert"
@@ -54,6 +86,8 @@ export default function LoginPage() {
               id="email"
               name="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               placeholder="you@example.com"
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -83,13 +117,22 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 placeholder="Enter your password"
                 className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
 
+              {/* Error Message */}
+              {error && (
+                <p className="mt-2 text-sm text-red-600" role="alert">
+                  {error}
+                </p>
+              )}
+
               <button
-                type="button"
+                type="submit"
                 onClick={() => setShowPassword((current) => !current)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-500 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -135,12 +178,14 @@ export default function LoginPage() {
           {/* Sign In Button */}
           <button
             type="submit"
+            disabled={loading}
             className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 active:scale-[0.99]"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
-
+        {/* Empty Fields */}
+        
         {/* Registration Link */}
         <div className="mt-6 border-t border-slate-100 pt-6 text-center">
           <p className="text-sm text-slate-600">
