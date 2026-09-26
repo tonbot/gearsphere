@@ -1,7 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
-import { saveListing, type ListingActionState } from "@/src/app/(dashboard)/listings/actions";
+import { useActionState, useEffect, useState } from "react";
+import {
+  saveListing,
+  type ListingActionState,
+} from "@/src/app/(dashboard)/listings/actions";
 
 type Category = {
   id: string;
@@ -21,6 +24,11 @@ type Listing = {
   longitude: number | null;
 };
 
+type SelectedImage = {
+  file: File;
+  preview: string;
+};
+
 type ListingFormProps = {
   categories: Category[];
   listing?: Listing;
@@ -32,10 +40,7 @@ const initialState: ListingActionState = {};
 // LISTING FORM COMPONENT
 // -------------------------
 
-export default function ListingForm({
-  categories,
-  listing,
-}: ListingFormProps) {
+export default function ListingForm({ categories, listing }: ListingFormProps) {
   const [state, formAction, pending] = useActionState(
     saveListing,
     initialState,
@@ -43,11 +48,11 @@ export default function ListingForm({
 
   const isEditing = Boolean(listing);
 
+  const [SelectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
+
   return (
     <form action={formAction} className="space-y-6">
-      {listing && (
-        <input type="hidden" name="id" value={listing.id} />
-      )}
+      {listing && <input type="hidden" name="id" value={listing.id} />}
 
       {state?.error && (
         <div
@@ -172,9 +177,7 @@ export default function ListingForm({
       {/* Location */}
       <section className="border-t border-slate-100 pt-6">
         <div className="mb-5">
-          <h2 className="text-xl font-semibold text-slate-900">
-            Location
-          </h2>
+          <h2 className="text-xl font-semibold text-slate-900">Location</h2>
 
           <p className="mt-1 text-sm text-slate-500">
             Help renters know where the equipment is located.
@@ -295,6 +298,99 @@ export default function ListingForm({
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             />
           </div>
+        </div>
+      </section>
+
+      {/* Images */}
+      <section className="border-t border-slate-100 pt-6">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold text-slate-900">
+            Equipment Images
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Add photos of the equipment to help renters know what they are
+            renting.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <label
+            htmlFor="listing-images"
+            className="block cursor-pointer rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-center transition hover:border-primary hover:bg-slate-100"
+          >
+            <span className="block text-sm font-medium text-slate-700">
+              Choose equipment images
+            </span>
+
+            <span className="mt-1 block text-xs text-slate-500">
+              JPEG, PNG, WebP or GIF — up to 5 MB per image
+            </span>
+
+            <input
+              id="listing-images"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              multiple
+              className="sr-only"
+              onChange={(event) => {
+                const files = Array.from(event.target.files ?? []);
+
+                const validImages = files.filter((file) => {
+                  const validType = [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp",
+                    "image/gif",
+                  ].includes(file.type);
+
+                  const validSize = file.size <= 5 * 1024 * 1024;
+
+                  return validType && validSize;
+                });
+
+                const newImages = validImages.map((file) => ({
+                  file,
+                  preview: URL.createObjectURL(file),
+                }));
+
+                setSelectedImages((current) => [...current, ...newImages]);
+
+                event.target.value = "";
+              }}
+            />
+          </label>
+
+          {SelectedImages.length > 0 && (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+              {SelectedImages.map((image, index) => (
+                <div
+                  key={`${image.file.name}-${index}`}
+                  className="relative overflow-hidden rounded-lg border border-slate-200 bg-white"
+                >
+                  <img
+                    src={image.preview}
+                    alt={`Selected equipment image ${index + 1}`}
+                    className="aspect-square w-full object-cover"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      URL.revokeObjectURL(image.preview);
+
+                      setSelectedImages((current) =>
+                        current.filter((_, imageIndex) => imageIndex !== index),
+                      );
+                    }}
+                    className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white transition hover:bg-black"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
