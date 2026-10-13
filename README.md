@@ -1,117 +1,110 @@
+# GearSphere
+
+**A Community Gear-Sharing and Equipment Rental Marketplace**
+
+GearSphere is a web application designed to connect people who own equipment with people who need it. Users can discover gear, create equipment listings, upload images, and manage their listings through a shared marketplace.
+
+## Deployment
+Deployed to Vercel:
+[Site Link](https://gearsphere.vercel.app/)
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Frontend:** React 19 and TypeScript
+- **Styling:** Tailwind CSS 4
+- **Backend and Database:** Supabase and PostgreSQL
+- **Authentication:** Supabase Auth
+- **File Storage:** Supabase Storage
+- **Code Quality:** ESLint
+
+## Implemented Features
+
+- **Landing Page:** Introduces the platform, equipment categories, and featured gear.
+- **User Authentication:** Authentication-related pages and account access.
+- **Equipment Listings:** Create, view, and edit equipment listings.
+- **Image Management:** Upload and remove listing images.
+- **User Dashboard:** Shared layout and navigation for signed-in users.
+- **Booking:** Users can make a bookong or cancel a book for a listing. 
+- **Rating & Reviews:** Users can leave a rating and/or add reviews on a listing.
+- **Custom 404 Page:** A branded page for unavailable routes.
+
+
+## Getting Started
+
+### Prerequisites
+
+Install [Node.js](https://nodejs.org/), npm, and Git. You will also need access to the project's Supabase credentials.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/tonbot/gearsphere.git
+cd gearsphere
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env.local` file in the project root and add your Supabase project credentials:
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_PUBLIC_ANON_KEY
+
+GEARSPHERE_DATABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+GEARSPHERE_ANON_KEY=YOUR_SUPABASE_PUBLIC_ANON_KEY
+```
+
+Replace the placeholders with the values provided by the project team. Never commit environment files or expose privileged credentials.
+
+### 4. Start the Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Available Commands
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` | Build the application for production |
+| `npm run start` | Run the production build |
+| `npm run lint` | Run ESLint |
+
+## Database and Image Storage
+
+GearSphere uses Supabase and PostgreSQL to manage application data. Listing information is stored in the database, while listing image files are stored in the Supabase Storage bucket `listing-images`, with their metadata maintained in the `listing_images` table.
+
+## Design System
+
+The application uses **Inter** typography and the following theme colors:
+
+- **Primary:** `#166534`
+- **Secondary:** `#334155`
+- **Accent:** `#F59E0B`
+
+## Collaborators
+
+- [Toyin Ajiboye](https://github.com/tonbot)
+- [Collins Onyebuchi Attah](https://github.com/attahcollinso)
+- [Michael Tatani Kazembe](https://github.com/michaelkazembe)
+- [Lorenzo Ivan Salamanca](https://github.com/ZigzagAlloy01)
+
 ## Team Quotes
-* "You don't need to figure it all at once, let the problem teach you as you go." - Toyin Ajiboye
-* "Nothing is impossible with God." - Michael Tatani Kazembe
-* "Persistence is the key, if your mind can conceive it, you can achieve it". - Attah Collins 
-* "Pride has the power to hinder our progress as nothing else can." - Ivan Salamanca
+- "You don't need to figure it all at once, let the problem teach you as you go." - _Toyin Ajiboye_
+- "Nothing is impossible with God." - _Michael Tatani Kazembe_
+- "Persistence is the key, if your mind can conceive it, you can achieve it". - _Attah Collins_
+- "Pride has the power to hinder our progress as nothing else can." - _Lorenzo Ivan Salamanca_
 
-## GearSphere Design System
+## Repository
 
-The GearSphere design system provides a consistent visual language across the application. All team members should follow these standards when creating or modifying UI components.
-
-### Colors
-
-| Token         | Hex       | Usage                                        |
-| ------------- | --------- | -------------------------------------------- |
-| **Primary**   | `#166534` | Main brand color and primary actions         |
-| **Secondary** | `#334155` | Supporting UI and secondary elements         |
-| **Accent**    | `#F59E0B` | Highlights, attention, and featured elements |
-
-#### Color Usage
-
-* **Primary** — Main actions such as **Sign Up**, **List Item**, **Save**, and primary branding.
-* **Secondary** — Supporting elements such as secondary actions, navigation, and supporting content.
-* **Accent** — Highlights and attention areas such as **Featured**, **Rent Now**, ratings, and important callouts.
-* Use Tailwind's `slate`/`neutral` colors for general backgrounds, borders, and text.
-* Do not introduce new brand colors without team agreement.
-
-#### Tailwind Usage
-
-Use the theme tokens rather than hard-coded hex values:
-
-```tsx
-<button className="bg-primary text-white">
-  Rent Now
-</button>
-
-<h2 className="text-secondary">
-  Available Equipment
-</h2>
-
-<span className="bg-accent text-white">
-  Featured
-</span>
-```
-
-Avoid:
-
-```tsx
-<button className="bg-[#166534]">
-  Rent Now
-</button>
-```
-
----
-
-### Typography
-
-**Font:** Inter
-
-GearSphere uses **Inter** as its primary typeface throughout the application.
-
-| Element                | Tailwind Class           | Size | Weight | Usage                      |
-| ---------------------- | ------------------------ | ---: | -----: | -------------------------- |
-| **Page Title**         | `text-3xl font-bold`     | 30px |    700 | Main page headings         |
-| **Section Heading**    | `text-2xl font-semibold` | 24px |    600 | Major sections             |
-| **Subheading**         | `text-xl font-semibold`  | 20px |    600 | Smaller sections and cards |
-| **Body**               | `text-base`              | 16px |    400 | Normal content             |
-| **Supporting Text**    | `text-sm`                | 14px |    400 | Supporting information     |
-| **Caption / Metadata** | `text-xs`                | 12px |    400 | Metadata and helper text   |
-
-#### Font Weights
-
-| Weight | Tailwind Class  | Usage              |
-| -----: | --------------- | ------------------ |
-|    400 | `font-normal`   | Body text          |
-|    500 | `font-medium`   | Labels and buttons |
-|    600 | `font-semibold` | Section headings   |
-|    700 | `font-bold`     | Page titles        |
-
-#### Text Colors
-
-| Tailwind Class   | Usage           |
-| ---------------- | --------------- |
-| `text-slate-900` | Primary text    |
-| `text-slate-600` | Secondary text  |
-| `text-slate-500` | Supporting text |
-| `text-slate-400` | Muted text      |
-
-#### Typography Guidelines
-
-* Use **Inter** throughout the application.
-* Use Tailwind typography classes rather
-
-### GearSphere Dashboard
-
-┌─────────────────────────────────────────────────────────┐
-│ GearSphere     Dashboard  Browse  My Listings  Profile  │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Welcome back, user!                                    │
-│  Here's your current GearSphere account.                │
-│                                                         │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌────────┐   │
-│  │ Listings  │ │ Requests  │ │ Rentals   │ │Messages│   │
-│  │    5      │ │    3      │ │    2      │ │   4    │   │
-│  └───────────┘ └───────────┘ └───────────┘ └────────┘   │
-│                                                         │
-│  Quick Actions                                          │
-│  [+ List Equipment]  [Browse Equipment]                 │
-│                                                         │
-│  My Listings                         Recent Activity    │
-│  ┌────────────────────────┐          ┌───────────────┐  │
-│  │ Power Drill   Active   │          │ New request   │  │
-│  │ Generator     Rented   │          │ Rental agreed │  │
-│  │ Welder        Active   │          │ New message   │  │
-│  └────────────────────────┘          └───────────────┘  │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+[GitHub — tonbot/gearsphere](https://github.com/tonbot/gearsphere)
